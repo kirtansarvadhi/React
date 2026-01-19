@@ -1,6 +1,4 @@
 const pool = require('../config/db');
-
-// CREATE PRODUCT (Admin)
 exports.createProduct = async (req, res) => {
   try {
     const {
@@ -31,7 +29,6 @@ exports.createProduct = async (req, res) => {
   }
 };
 
-// GET ALL PRODUCTS (User + Admin)
 exports.getAllProducts = async (req, res) => {
   try {
     const result = await pool.query(
@@ -43,7 +40,6 @@ exports.getAllProducts = async (req, res) => {
   }
 };
 
-// GET PRODUCT BY ID
 exports.getProductById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -63,7 +59,6 @@ exports.getProductById = async (req, res) => {
   }
 };
 
-// UPDATE PRODUCT (Admin)
 exports.updateProduct = async (req, res) => {
   try {
     const { id } = req.params;
@@ -99,7 +94,6 @@ exports.updateProduct = async (req, res) => {
   }
 };
 
-// DELETE PRODUCT (Admin)
 exports.deleteProduct = async (req, res) => {
   try {
     const { id } = req.params;

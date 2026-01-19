@@ -1,6 +1,5 @@
 const pool = require('../config/db');
 
-// PLACE ORDER
 exports.placeOrder = async (req, res) => {
   const client = await pool.connect();
 
@@ -9,7 +8,6 @@ exports.placeOrder = async (req, res) => {
 
     await client.query('BEGIN');
 
-    // 1. Get cart items
     const cartResult = await client.query(
       `SELECT c.product_id, c.quantity, p.price, p.stock
        FROM cart c
@@ -23,7 +21,6 @@ exports.placeOrder = async (req, res) => {
       return res.status(400).json({ message: 'Cart is empty' });
     }
 
-    // 2. Check stock & calculate total
     let totalPrice = 0;
 
     for (const item of cartResult.rows) {
@@ -36,7 +33,6 @@ exports.placeOrder = async (req, res) => {
       totalPrice += item.price * item.quantity;
     }
 
-    // 3. Create order
     const orderResult = await client.query(
       `INSERT INTO orders (user_id, total_price)
        VALUES ($1, $2)
@@ -46,7 +42,6 @@ exports.placeOrder = async (req, res) => {
 
     const orderId = orderResult.rows[0].id;
 
-    // 4. Create order items & update stock
     for (const item of cartResult.rows) {
       await client.query(
         `INSERT INTO order_items (order_id, product_id, quantity, price)
@@ -62,7 +57,6 @@ exports.placeOrder = async (req, res) => {
       );
     }
 
-    // 5. Clear cart
     await client.query(
       'DELETE FROM cart WHERE user_id = $1',
       [userId]
@@ -84,7 +78,6 @@ exports.placeOrder = async (req, res) => {
   }
 };
 
-// GET USER ORDERS
 exports.getOrders = async (req, res) => {
   try {
     const userId = req.user.id;

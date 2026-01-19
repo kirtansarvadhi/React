@@ -1,17 +1,13 @@
 const pool = require('../config/db');
 
-
-// REGISTER USER
 exports.register = async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
-    // Validation
     if (!name || !email || !password) {
       return res.status(400).json({ message: 'All fields are required' });
     }
 
-    // Check existing user
     const existing = await pool.query(
       'SELECT id FROM users WHERE email = $1',
       [email]
@@ -21,7 +17,6 @@ exports.register = async (req, res) => {
       return res.status(400).json({ message: 'Email already registered' });
     }
 
-    // Insert user (role = user)
     const result = await pool.query(
       `INSERT INTO users (name, email, password, role)
        VALUES ($1, $2, $3, 'user')
@@ -58,7 +53,6 @@ exports.login = async (req, res) => {
 
     const user = result.rows[0];
 
-    // ✅ SIMPLE PASSWORD CHECK
     if (user.password !== password) {
       return res.status(401).json({ message: 'Invalid credentials' });
     }

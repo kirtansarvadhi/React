@@ -1,25 +1,21 @@
 const pool = require('../config/db');
 
-// ADD TO CART
 exports.addToCart = async (req, res) => {
   try {
     const userId = req.user.id;
     const { product_id, quantity } = req.body;
 
-    // Check if product already in cart
     const existing = await pool.query(
       'SELECT * FROM cart WHERE user_id = $1 AND product_id = $2',
       [userId, product_id]
     );
 
     if (existing.rows.length) {
-      // Update quantity
       await pool.query(
         'UPDATE cart SET quantity = quantity + $1 WHERE id = $2',
         [quantity || 1, existing.rows[0].id]
       );
     } else {
-      // Insert new product
       await pool.query(
         'INSERT INTO cart (user_id, product_id, quantity) VALUES ($1, $2, $3)',
         [userId, product_id, quantity || 1]
@@ -33,7 +29,6 @@ exports.addToCart = async (req, res) => {
   }
 };
 
-// GET CART PRODUCTS
 exports.getCart = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -61,7 +56,6 @@ exports.getCart = async (req, res) => {
   }
 };
 
-// REMOVE FROM CART
 exports.removeFromCart = async (req, res) => {
   try {
     const userId = req.user.id;
