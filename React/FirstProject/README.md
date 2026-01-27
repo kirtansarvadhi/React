@@ -17,8 +17,7 @@ This project is built to practice core React concepts like hooks, routing, conte
 - React (Vite)
 - TypeScript
 - React Router
-- Context API + Reducer
-
+- 
 ## Run Project
 
 ```bash
